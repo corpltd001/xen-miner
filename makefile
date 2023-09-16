@@ -10,6 +10,9 @@ requirements:
 image:
 	docker build -t ${IMAGE} .
 
+image-go:
+	docker build -f Dockerfile-go .
+
 image-run:
 	docker run -it --rm ${IMAGE}
 
@@ -23,6 +26,21 @@ dev:
 
 act:
 	act workflow_dispatch \
+	--actor CNSumi \
+	-s DOCKERHUB_USERNAME \
+	-s DOCKERHUB_PASSWORD
+
+act-image-py:
+	act workflow_dispatch \
+	--actor CNSumi \
+	-j image-py \
+	-s DOCKERHUB_USERNAME \
+	-s DOCKERHUB_PASSWORD
+
+act-image-go:
+	act workflow_dispatch \
+	--actor CNSumi \
+	-j image-go \
 	-s DOCKERHUB_USERNAME \
 	-s DOCKERHUB_PASSWORD
 

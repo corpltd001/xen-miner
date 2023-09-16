@@ -1,14 +1,13 @@
-name: "xenminer docker image ci"
+name: "xenminer docker image ci go"
 on:
   push:
     paths:
-      - dockerfile
-      - miner.py
-      - requirements.txt
+      - Dockerfile-go
+      - golang
   workflow_dispatch:
 
 jobs:
-  build:
+  image-go:
     runs-on: ubuntu-latest
     steps:
       - name: "login ghcr.io"
@@ -29,10 +28,11 @@ jobs:
       - name: build and push
         uses: docker/build-push-action@v3
         with:
+          file: Dockerfile-go
           push: true
           tags: |
-            docker.io/cnsumi/xen-miner:latest
-            ghcr.io/cnsumi/xen-miner:latest
+            docker.io/cnsumi/xen-miner-go:latest
+            ghcr.io/cnsumi/xen-miner-go:latest
           platforms: |
             linux/amd64
             linux/arm64
