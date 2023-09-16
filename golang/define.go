@@ -1,7 +1,5 @@
 package main
 
-import "runtime"
-
 const (
 	defaultAccount = "0xF120007d00480034fAf40000e1727C7809734b20"
 
@@ -16,6 +14,4 @@ const (
 
 var (
 	defaultSalt = []byte("XEN10082022XEN")
-
-	systemThreadCount = runtime.NumCPU()
 )

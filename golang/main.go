@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+	"runtime"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,18 +19,22 @@ func initLogrus() {
 }
 
 var account string
-var threads int
+var workerCount int
 
 func init() {
 	initLogrus()
 
-	flag.StringVar(&account, "account", defaultAccount, "beneficiary address")
-	flag.IntVar(&threads, "threads", systemThreadCount, "Number of threads")
+	flag.StringVar(&account, "account", defaultAccount, "Beneficiary address")
+	flag.IntVar(&workerCount, "worker", runtime.NumCPU(), "Number of thread to miner, use all cpu core if not set")
 	flag.Parse()
+
+	if workerCount <= 0 {
+		logrus.Fatalf("invalid worker setting: %d, should >= 1", workerCount)
+	}
 }
 
 func main() {
-	miner := NewMiner(account, threads)
+	miner := NewMiner(account, MinerOptionWithCount(workerCount))
 	miner.memory = 0
 	logrus.Infof("start miner: %s", miner.account)
 

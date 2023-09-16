@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -19,8 +20,8 @@ type HashRateReport struct {
 type Miner struct {
 	Argon2ID
 
-	account string
-	threads int
+	account     string
+	workerCount int
 
 	httpClient *http.Client
 	ctx        context.Context
@@ -35,13 +36,19 @@ type Miner struct {
 
 type MinerOption func(m *Miner)
 
-func NewMiner(account string, threads int, opts ...MinerOption) *Miner {
+func MinerOptionWithCount(count int) MinerOption {
+	return func(m *Miner) {
+		m.workerCount = count
+	}
+}
+
+func NewMiner(account string, opts ...MinerOption) *Miner {
 	m := &Miner{
 		httpClient:               http.DefaultClient,
 		ctx:                      context.Background(),
 		Argon2ID:                 GetDefaultArgon2ID(),
 		account:                  account,
-		threads:                  threads,
+		workerCount:              runtime.NumCPU(),
 		memoryUpdate:             make(chan uint32),
 		initMemoryDifficultyDone: make(chan struct{}),
 	}
@@ -57,7 +64,7 @@ func (m *Miner) Banner() {
 	logrus.Infof("--------User Configuration--------")
 	logrus.Infof("Memory Difficulty: %d", m.memory)
 	logrus.Infof("Time Difficulty: %d", m.time)
-	logrus.Infof("Threads: %d", m.thread)
+	logrus.Infof("Threads: %d", m.workerCount)
 	logrus.Infof("account: %s", m.account)
 	logrus.Infof("salt: %s", string(m.salt))
 	logrus.Infof("keyLength: %d", m.keyLen)
@@ -196,8 +203,8 @@ func (m *Miner) Start() {
 		}
 	}
 
-	logrus.Infof("start %d process...", m.threads)
-	for i := 0; i < m.threads; i++ {
+	logrus.Infof("start %d process...", m.workerCount)
+	for i := 0; i < m.workerCount; i++ {
 		go f(i)
 	}
 }
