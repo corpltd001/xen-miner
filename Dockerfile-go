@@ -1,0 +1,13 @@
+FROM docker.io/golang:alpine AS builder
+
+WORKDIR /build
+
+COPY golang .
+
+RUN go build -o miner
+
+FROM scratch AS final
+
+COPY --from=builder /build/miner /miner
+
+ENTRYPOINT ["/miner"]
