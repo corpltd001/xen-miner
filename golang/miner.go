@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -21,6 +20,7 @@ type Miner struct {
 	Argon2ID
 
 	account string
+	threads int
 
 	httpClient *http.Client
 	ctx        context.Context
@@ -35,12 +35,13 @@ type Miner struct {
 
 type MinerOption func(m *Miner)
 
-func NewMiner(account string, opts ...MinerOption) *Miner {
+func NewMiner(account string, threads int, opts ...MinerOption) *Miner {
 	m := &Miner{
 		httpClient:               http.DefaultClient,
 		ctx:                      context.Background(),
 		Argon2ID:                 GetDefaultArgon2ID(),
 		account:                  account,
+		threads:                  threads,
 		memoryUpdate:             make(chan uint32),
 		initMemoryDifficultyDone: make(chan struct{}),
 	}
@@ -195,8 +196,8 @@ func (m *Miner) Start() {
 		}
 	}
 
-	logrus.Infof("start %d process...", runtime.NumCPU())
-	for i := 0; i < goroutineCount; i++ {
+	logrus.Infof("start %d process...", m.threads)
+	for i := 0; i < m.threads; i++ {
 		go f(i)
 	}
 }

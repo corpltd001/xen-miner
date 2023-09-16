@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 func initLogrus() {
@@ -17,16 +18,18 @@ func initLogrus() {
 }
 
 var account string
+var threads int
 
 func init() {
 	initLogrus()
 
 	flag.StringVar(&account, "account", defaultAccount, "beneficiary address")
+	flag.IntVar(&threads, "threads", systemThreadCount, "Number of threads")
 	flag.Parse()
 }
 
 func main() {
-	miner := NewMiner(account)
+	miner := NewMiner(account, threads)
 	miner.memory = 0
 	logrus.Infof("start miner: %s", miner.account)
 

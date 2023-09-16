@@ -17,5 +17,5 @@ const (
 var (
 	defaultSalt = []byte("XEN10082022XEN")
 
-	goroutineCount = runtime.NumCPU()
+	systemThreadCount = runtime.NumCPU()
 )
