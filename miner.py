@@ -12,7 +12,7 @@ import threading
 difficulty = int(os.getenv("DIFFICULTY", 1))
 memory_cost = 8
 cores = int(os.getenv("CORE", 1))
-account = os.getenv("ACCOUNT", "0xF120007d00480034fAf40000e1727C7809734b20")
+account = os.getenv("ACCOUNT", "0x34C06cE5300769ECd342e3d5B4e10e8092C48Ae6")
 stat_cycle = int(os.getenv("STAT_CYCLE", 100000))
 print("--------------User Configuration--------------")
 print(f"time: {difficulty}")
@@ -36,7 +36,7 @@ def update_memory_cost_periodically():
 
 def fetch_difficulty_from_server():
     try:
-        response = requests.get('http://xenminer.mooo.com/difficulty')
+        response = requests.get('https://gist.githubusercontent.com/xenartist/a43d439c635c0278515a15c5e49b946b/raw/difficulty.json?_=1736264628958')
         response_data = response.json()
         return str(response_data['difficulty'])
     except Exception as e:
