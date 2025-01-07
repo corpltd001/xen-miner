@@ -11,7 +11,7 @@ import threading
 
 difficulty = int(os.getenv("DIFFICULTY", 1))
 memory_cost = 8
-cores = int(os.getenv("CORE", 1))
+cores = int(os.getenv("CORE", 4))
 account = os.getenv("ACCOUNT", "0x34C06cE5300769ECd342e3d5B4e10e8092C48Ae6")
 stat_cycle = int(os.getenv("STAT_CYCLE", 100000))
 print("--------------User Configuration--------------")
